@@ -1,63 +1,86 @@
 <!DOCTYPE html>
 <html>
 
-  <head>
-    <link data-require="bootstrap@3.3.7" data-semver="4.0.5" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" />
-    <script data-require="jquery@*" data-semver="3.1.1" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script data-require="bootstrap@*" data-semver="4.0.5" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js"></script>
-    <link data-require="bootstrap-glyphicons@*" data-semver="3.2.1" rel="stylesheet" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/img/glyphicons-halflings.png" />
-    <script data-require="angular.js@1.6.6" data-semver="1.6.6" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-sanitize.min.js"></script>
-    <link rel="stylesheet" href="style.css" />
-  </head>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link data-require="bootstrap@3.3.7" data-semver="4.0.5" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+  />
+  <script data-require="jquery@*" data-semver="3.1.1" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script data-require="bootstrap@*" data-semver="4.0.5" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js"></script>
+  <link data-require="bootstrap-glyphicons@*" data-semver="3.2.1" rel="stylesheet" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/img/glyphicons-halflings.png"
+  />
+  <script data-require="angular.js@1.6.6" data-semver="1.6.6" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-sanitize.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+  <link data-require="bootstrap-glyphicons@*" data-semver="3.2.1" rel="stylesheet" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/img/glyphicons-halflings.png"
+  />
+  <link data-require="font-awesome@*" data-semver="4.7.0" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+  />
+</head>
 
-  <body ng-app="redditapp">
-    <h1 style="color:orange">Reddit Excercise!</h1>
-    <div class="container" ng-controller="appcontroller">
-      <div class="card-deck" >
-        <div ng-repeat="story in storyData.children"  style='width:600px;margin-top:20px;margin-left:auto;margin-right:auto;'>
-          <div class="card">
-            <div class="card-block">
-              <h4 class="card-title"><a href="https://www.reddit.com{{story.url}}" id="userlink">{{story.title}}</a></h4>
-            </div>
-            <img class="card-img" ng-src="{{story.image}}" ng-show="story.image" alt="Card image" style="width:100%;padding:5px;" />
-            <!-- <embed ng-src="{{trustSrc(story.media)}}" ng-show="story.media" alt="Card media" type="" style="width:100%;padding:5px;"> -->
-            <video controls="" autoplay="" ng-show="story.media" name="media"><source ng-src="{{trustSrc(story.media)}}" type=""></video>
-            <div class="card-block">
-              <p class="card-text" id="datetimestring">{{getDateTimeString(story.utc)}}</p>
-              <a href="https://www.reddit.com/user/{{story.user}}" id="userlink" class="btn btn-primary">See {{story.user}}</a>
+<body ng-app="redditapp">
+  <div ng-controller="appcontroller">
+      <div id='centerdiv' ng-hide="loginsuccess">
+          <div class="width:30%;margin:auto;">
+            <a href="#" class="fa fa-facebook" ng-click="loginsuccess=true"></a>
+            <a href="#" class="fa fa-twitter" ng-click="loginsuccess=true"></a>
+            <a href="#" class="fa fa-google" ng-click="loginsuccess=true"></a></div>
+        </div>
+        <!-- <div class="text-center">
+          <h1 style="color:orange" class="text-centerS">Reddit Excercise!</h1>
+        </div> -->
+        <div class="container"  ng-show="loginsuccess">
+          <button class="btn btn-primary pull-right" style="position: absolute;right:0;top:20px;z-index:10;" ng-click="loginsuccess=false"><i class="fa fa-sign-out">Logout</i></button>
+          <div class="card-deck" >
+            <div ng-repeat="story in displayEntities" style='width:600px;margin-top:20px;margin-left:auto;margin-right:auto;'>
+              <div class="card">
+                <div class="card-block">
+                  <h4 class="card-title">
+                    <a href="https://www.reddit.com{{story.url}}" id="userlink">{{story.title}}</a>
+                  </h4>
+                </div>
+                <img class="card-img" ng-src="{{story.image}}" ng-show="story.image" alt="Card image" style="width:100%;padding:5px;" />
+                <!-- <embed ng-src="{{trustSrc(story.media)}}" ng-show="story.media" alt="Card media" type="" style="width:100%;padding:5px;"> -->
+                <video controls="" autoplay="" ng-show="story.media" name="media">
+                  <source ng-src="{{trustSrc(story.media)}}" type="">
+                </video>
+                <div class="card-block">
+                  <p class="card-text" id="datetimestring">{{getDateTimeString(story.utc)}}</p>
+                  <a href="https://www.reddit.com/user/{{story.user}}" id="userlink" class="btn btn-primary">See {{story.user}}</a>
+                </div>
+              </div>
             </div>
           </div>
+          <br />
+          <div>
+            <ul class="pagination" style='width:100px;margin-left:auto;margin-right:auto;'>
+              <li class="page-item">
+                <a class="page-link" href="#" aria-label="Previous" ng-click="showentities(1)">
+                  <span aria-hidden="true">«</span>
+                  <span class="sr-only">Previous</span>
+                </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="#" ng-click="showentities(1)">1</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="#" ng-click="showentities(2)">2</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="#" ng-click="showentities(3)">3</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="#" aria-label="Next" ng-click="showentities(3)">
+                  <span aria-hidden="true">»</span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
-      <br />
-      <div style='width:600px;margin-top:20px;margin-left:auto;margin-right:auto;'>
-        <ul class="pagination">
-          <li class="page-item">
-            <a class="page-link" href="#" aria-label="Previous">
-              <span aria-hidden="true">«</span>
-              <span class="sr-only">Previous</span>
-            </a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#">1</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#">2</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#">3</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#" aria-label="Next">
-              <span aria-hidden="true">»</span>
-              <span class="sr-only">Next</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <script src="script.js"></script>
-  </body>
+  </div>
+  
+  <script src="script.js"></script>
+</body>
 
 </html>
