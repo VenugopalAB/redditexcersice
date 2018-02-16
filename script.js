@@ -3,15 +3,21 @@ angular.module('redditapp', ['ngSanitize']).controller('appcontroller', ['$scope
 
 function appcontroller($scope, $http, $sce) {
   $scope.init = function () {
-    $scope.getData();
-    $scope.currentIndex = 0;
+    // Show login page
     $scope.loginsuccess = false;
+
+    // get data from reddit
+    $scope.currentIndex = 0;
+    $scope.getData();
+    
   };
 
+  // Method to allow loading of cross origin images and vides
   $scope.trustSrc = function (src) {
     return $sce.trustAsResourceUrl(src);
   }
 
+  // Get the first 50 entries
   $scope.getData = function () {
     $http.get("https://www.reddit.com/top.json")
       .then(function (response) {
@@ -30,25 +36,29 @@ function appcontroller($scope, $http, $sce) {
           $scope.totalchildren = $scope.storyData.children.concat($scope.storyDataNext.children);
           console.log($scope.storyData);
           console.log($scope.storyDataNext);
+          // Show entites in first page
           $scope.showentities(1);
         });
       });
   }
 
-  $scope.showentities = function (input) {
-    if (!input || input < 1)
-      input = 1;
-    if (input > 3)
-      input = 3;
-    if (input == $scope.currentIndex)
+  // Method to show the entries of current page
+  $scope.showentities = function (pageindex) {
+
+    if (!pageindex || pageindex < 1) // If page index less than one show first page
+      pageindex = 1;
+    if (pageindex > 3) // If page index more than 3 show third page
+      pageindex = 3;
+    if (pageindex == $scope.currentIndex) // If page index is same as current page do nothing
       return;
 
-    $scope.displayEntities = [];
-    let startIndex = (input - 1) * 15;
-    let endIndex = (input) * 15;
-    $scope.displayEntities = $scope.totalchildren.slice(startIndex, endIndex);
+    $scope.displayEntities = []; // This is the list shown in UI
+    let startIndex = (pageindex - 1) * 15;
+    let endIndex = (pageindex) * 15;
+    $scope.displayEntities = $scope.totalchildren.slice(startIndex, endIndex); // Get the current fifteen entites to be shown
   }
 
+  // Method to parse the current page json and retrieve the required data array
   $scope.getChildrenJson = function (childrenJson) {
     var jsonlist = [];
     for (let index = 0; index < childrenJson.length; ++index) {
@@ -65,7 +75,7 @@ function appcontroller($scope, $http, $sce) {
             media = child.data.preview.reddit_video_preview.scrubber_media_url;
           else console.log(child.data.media_embed);
         } else
-          image = child.data.preview.images["0"].source.url
+          image = child.data.url
       }
 
       var utc = child.data.created_utc;
@@ -81,6 +91,8 @@ function appcontroller($scope, $http, $sce) {
     console.log(jsonlist);
     return jsonlist;
   };
+
+  // method to get the data time string from unix time stamp
   $scope.getDateTimeString = function (unixTimeStamp) {
     var options = {
       year: "numeric",
@@ -93,5 +105,7 @@ function appcontroller($scope, $http, $sce) {
     var datestring = date2.toLocaleTimeString("en-us", options);
     return datestring;
   };
+
+  // Initialise data
   $scope.init();
 }
